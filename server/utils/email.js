@@ -1,37 +1,33 @@
-const nodemailer = require('nodemailer');
+// utils/email.js - ახალი ვერსია Resend-თვის
+const { Resend } = require('resend');
 
-const sendEmail = async (email, subject, text, html) => { // დავამატეთ html პარამეტრი
+// შექმენით Resend ინსტანცია
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const sendEmail = async (email, subject, text, html) => {
     try {
-        // 1. ტრანსპორტერი
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587, // შეცვალე 465-დან 587-ზე
-            secure: false, // 587-ისთვის უნდა იყოს false
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_APP_PASSWORD
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-        });
+        console.log(' Sending email via Resend to:', email);
 
-        // 2. წერილის პარამეტრები
-        const mailOptions = {
-            from: `"Fleet Admin" <${process.env.EMAIL_USER}>`,
+        // გამოიყენეთ Resend-ის API
+        const { data, error } = await resend.emails.send({
+            from: 'NovaRide <onboarding@resend.dev>', // უფასო ტესტ დომეინი
             to: email,
             subject: subject,
-            text: text, // fallback მათთვის, ვისაც HTML არ ეხსნება
-            html: html  // აქ ჩაჯდება დიზაინი
-        };
+            html: html || text, // HTML თუ არის, წინააღმდეგ შემთხვევაში ტექსტი
+            text: text // ტექსტური ვერსია
+        });
 
-        // 3. გაგზავნა
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent: ' + info.response);
+        if (error) {
+            console.error('❌ Resend error:', error);
+            // არ გადააგდოთ ერორი, რომ მომხმარებელი მაინც შეიქმნას
+            return null;
+        }
 
+        console.log('✅ Email sent successfully! ID:', data.id);
+        return data;
     } catch (error) {
-        console.error('Email sending error:', error);
-        // სურვილისამებრ შეგიძლია აქ AppError ისროლო, თუ გინდა რომ რეგისტრაცია გაჩერდეს ემაილის გაგზავნის გარეშე
+        console.error('❌ Unexpected email error:', error.message);
+        return null; // დაბრუნდით null-ს, არ გადააგდოთ ერორი
     }
 };
 
