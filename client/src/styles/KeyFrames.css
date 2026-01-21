@@ -1,0 +1,367 @@
+/* Elements animations */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.touch-pan-x {
+    touch-action: pan-x;
+    -webkit-overflow-scrolling: touch;
+}
+
+.hometext1 {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: hometext1 1.6s ease-out forwards;
+    animation-delay: 0.1s;
+}
+
+.hometext2 {
+    opacity: 0;
+    transform: translate(-20px, 20px);
+    animation: hometext2 1.6s ease-out forwards;
+    animation-delay: 0.3s;
+}
+
+.hometext3 {
+    opacity: 0;
+    transform: translateX(100px);
+    animation: hometext3 1.6s ease-out forwards;
+    animation-delay: 0.6s;
+}
+
+.hometext4 {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: hometext4_5 1.6s ease-out forwards;
+    animation-delay: 1.0s;
+}
+
+.hometext5 {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: hometext4_5 1.2s ease-out forwards;
+    animation-delay: 1.0s;
+}
+
+.hometext6,
+.hometext7,
+.hometext8,
+.hometext77,
+.photoanimate {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+
+
+
+.hometext6.animate {
+    animation: hometext6 0.9s ease-out forwards;
+    animation-delay: 0s;
+    /* ან scroll-ისას დაიწყოს მაშინვე */
+}
+
+.hometext7.animate {
+    animation: hometext6 0.9s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+.hometext8.animate {
+    animation: hometext8 0.8s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+
+.reddvv {
+    bottom: 0;
+    transform-origin: top;
+    transition: height 0.4s ease, background-color 0.4s ease;
+
+
+}
+
+
+.group:hover .reddvv {
+    animation: reddvv 0.4s ease-in forwards;
+}
+
+.dvv1,
+.dvv2,
+.dvv3,
+.dvv4 {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.dvv1.animate {
+
+
+    animation: dvvs 0.9s cubic-bezier(0.1, 0.1, 0.25, 1) forwards;
+    animation-delay: 0.1s;
+
+}
+
+.dvv2.animate {
+
+
+    animation: dvvs 0.9s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation-delay: 0.3s;
+
+}
+
+.dvv3.animate {
+
+
+    animation: dvvs 0.9s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation-delay: 0.6s;
+
+}
+
+.dvv4.animate {
+
+
+    animation: dvvs 0.9s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation-delay: 0.9s;
+
+}
+
+.butt {
+    opacity: 0;
+
+}
+
+.butt.animate {
+    animation: hometext8 0.8s ease-out forwards;
+    animation-delay: 0.4s;
+
+}
+
+.hometext77.animate {
+    animation: hometext6 0.9s ease-out forwards;
+    animation-delay: 0.4s;
+}
+
+.photoanimate.animate {
+    animation: pht 1.2s ease-out forwards;
+    animation-delay: 0.4s;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Base fade-in animation */
+@keyframes hometext1 {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes hometext2 {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    40% {
+        opacity: 0.6;
+        transform: translateY(-10px);
+    }
+
+    80% {
+        opacity: 0.8;
+        transform: translateY(5px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide + Back + Fade animation */
+@keyframes hometext3 {
+    0% {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    40% {
+        opacity: 0.6;
+        transform: translateX(-10px);
+    }
+
+    80% {
+        opacity: 0.8;
+        transform: translateX(5px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes hometext4_5 {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes hometext3 {
+    0% {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    40% {
+        opacity: 0.6;
+        transform: translateX(-10px);
+    }
+
+    80% {
+        opacity: 0.8;
+        transform: translateX(5px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes hometext6 {
+    0% {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: translateX(-10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes hometext8 {
+    0% {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+@keyframes reddvv {
+    0% {
+        height: 0%;
+        background-color: rgb(252, 124, 101);
+
+
+
+        border-top-left-radius: 100%;
+        /* ზედა მარცხენა კუთხე */
+        border-top-right-radius: 100%;
+    }
+
+
+
+    50% {
+
+        border-top-left-radius: 100%;
+        /* ზედა მარცხენა კუთხე */
+        border-top-right-radius: 100%;
+    }
+
+    100% {
+        height: 100%;
+
+    }
+
+
+}
+
+@keyframes dvvs {
+    0% {
+        opacity: 0;
+        transform: translateY(250px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.moving-box {
+
+    animation: sway 3.5s infinite ease-in-out;
+}
+
+@keyframes sway {
+    0% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(80px);
+        /* მოძრაობს მარჯვნივ */
+    }
+
+    100% {
+        transform: translateX(0px);
+        /* ბრუნდება საწყისზე */
+    }
+}
+
+@keyframes pht {
+    0% {
+        opacity: 0;
+        transform: translateX(-150px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+}
