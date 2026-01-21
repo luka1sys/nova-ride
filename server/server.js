@@ -20,7 +20,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongooseSanitize = require('express-mongo-sanitize');
 
-// ვქმნით express აპლიკაციას
+// ვქმნით express აპლიკაციასს
 const app = express();
 // ვტვირთავთ .env ფაილში შენახულ კონფიგურაციებს (მაგ: MONGO_URL, PORT)
 dotenv.config();
