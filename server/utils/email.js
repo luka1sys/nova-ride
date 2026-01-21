@@ -1,34 +1,29 @@
-// utils/email.js - ახალი ვერსია Resend-თვის
-const { Resend } = require('resend');
-
-// შექმენით Resend ინსტანცია
-const resend = new Resend(process.env.RESEND_API_KEY);
+const nodemailer = require('nodemailer');
 
 const sendEmail = async (email, subject, text, html) => {
     try {
-        console.log(' Sending email via Resend to:', email);
-
-        // გამოიყენეთ Resend-ის API
-        const { data, error } = await resend.emails.send({
-            from: 'NovaRide <onboarding@resend.dev>', // უფასო ტესტ დომეინი
-            to: email,
-            subject: subject,
-            html: html || text, // HTML თუ არის, წინააღმდეგ შემთხვევაში ტექსტი
-            text: text // ტექსტური ვერსია
+        const transporter = nodemailer.createTransport({
+            host: 'smtp-relay.brevo.com',
+            port: 2525, // Render-ზე 2525 ყველაზე საიმედოა
+            secure: false,
+            auth: {
+                // აქ აუცილებლად შენი იმეილი ჩაწერე .env-ში
+                user: process.env.BREVO_USER, 
+                pass: process.env.BREVO_PASSWORD
+            }
         });
 
-        if (error) {
-            console.error('❌ Resend error:', error);
-            // არ გადააგდოთ ერორი, რომ მომხმარებელი მაინც შეიქმნას
-            return null;
-        }
+        const mailOptions = {
+            from: `"NovaRide" <${process.env.BREVO_USER}>`,
+            to: email,
+            subject: subject,
+            text: text,
+            html: html
+        };
 
-        console.log('✅ Email sent successfully! ID:', data.id);
-        return data;
+        await transporter.sendMail(mailOptions);
+        console.log('✅ Email sent successfully via Brevo');
     } catch (error) {
-        console.error('❌ Unexpected email error:', error.message);
-        return null; // დაბრუნდით null-ს, არ გადააგდოთ ერორი
+        console.error('❌ Email sending error:', error);
     }
 };
-
-module.exports = sendEmail;
