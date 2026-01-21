@@ -18,11 +18,11 @@ const createSendToken = (user, statusCode, res) => {
         // cookie ს სიცოცხლის ვადა 
         maxAge: process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000,
         // 
-        secure: false,
+        secure: true,
         // javascript ბრაუზერში  ვერ წაიკითხავს cookie ს 
         httpOnly: true,
         // 
-        sameSite: 'Lax'
+        sameSite: 'none'
     })
     // ვაბრუნებთ სტატუსის კოდს და ახალ მომხმარებელს Json ფორმატში 
     res.status(statusCode).json({
@@ -107,8 +107,8 @@ const logout = (req, res) => {
     res.cookie('lt', '', {
         maxAge: 0,
         httpOnly: true,
-        secure: false,
-        sameSite: 'Lax',
+        secure: true,
+        sameSite: 'none',
         path: '/'
     });
 
