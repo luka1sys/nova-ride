@@ -22,6 +22,8 @@ const rateLimit = require('express-rate-limit');
 
 // ვქმნით express აპლიკაციასს
 const app = express();
+app.set('trust proxy', 1);
+
 // ვტვირთავთ .env ფაილში შენახულ კონფიგურაციებს (მაგ: MONGO_URL, PORT)
 dotenv.config();
 
