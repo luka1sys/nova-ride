@@ -13,7 +13,7 @@ const sendEmail = async (email, subject, text, html) => {
         });
 
         const mailOptions = {
-            from: `"NovaRide" <dgebuadzeluka33@gmail.com>`,
+            from: `"NovaRide" <dgebuadzeluka2008@gmail.com>`,
             to: email,
             subject: subject,
             text: text,
