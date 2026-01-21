@@ -43,7 +43,7 @@ const signUp = catchAsync(async (req, res, next) => {
     const verificationToken = newUser.createVerificationToken();
     await newUser.save({ validateBeforeSave: false });
 
-    const verificationURL = `${req.protocol}://${req.get('host')}/users/verify/${verificationToken}`;
+    const verificationURL = `${req.protocol}://${req.get('host')}/api/users/verify/${verificationToken}`;
 
     const htmlMessage = `
     <div style="font-family: Arial, sans-serif; text-align: center;">
