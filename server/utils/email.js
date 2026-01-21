@@ -1,29 +1,37 @@
 const nodemailer = require('nodemailer');
 
-const sendEmail = async (email, subject, text, html) => {
+const sendEmail = async (email, subject, text, html) => { // დავამატეთ html პარამეტრი
     try {
+        // 1. ტრანსპორტერი
         const transporter = nodemailer.createTransport({
-            host: 'smtp-relay.brevo.com',
-            port: 587, // შეცვალე 587-დან 2525-ზე
-            secure: false,
+            host: 'smtp.gmail.com',
+            port: 587, // შეცვალე 465-დან 587-ზე
+            secure: false, // 587-ისთვის უნდა იყოს false
             auth: {
-                user: process.env.BREVO_USER,
-                pass: process.env.BREVO_PASSWORD
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_APP_PASSWORD
+            },
+            tls: {
+                rejectUnauthorized: false
             }
         });
 
+        // 2. წერილის პარამეტრები
         const mailOptions = {
-            from: `"NovaRide" <dgebuadzeluka2008@gmail.com>`,
+            from: `"Fleet Admin" <${process.env.EMAIL_USER}>`,
             to: email,
             subject: subject,
-            text: text,
-            html: html
+            text: text, // fallback მათთვის, ვისაც HTML არ ეხსნება
+            html: html  // აქ ჩაჯდება დიზაინი
         };
 
-        await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully via Brevo');
+        // 3. გაგზავნა
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+
     } catch (error) {
-        console.error('Brevo error:', error);
+        console.error('Email sending error:', error);
+        // სურვილისამებრ შეგიძლია აქ AppError ისროლო, თუ გინდა რომ რეგისტრაცია გაჩერდეს ემაილის გაგზავნის გარეშე
     }
 };
 
