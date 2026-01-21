@@ -16,16 +16,17 @@ const cookieParser = require('cookie-parser');
 const paymentRouter = require('./routes/payment.routes');
 const oauthRouter = require('./routes/oauth.routes');
 const reviewRouter = require('./routes/review.routes');
-
+const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const mongooseSanitize = require('express-mongo-sanitize');
+// const mongooseSanitize = require('express-mongo-sanitize');
 
 // ვქმნით express აპლიკაციასს
 const app = express();
 // ვტვირთავთ .env ფაილში შენახულ კონფიგურაციებს (მაგ: MONGO_URL, PORT)
 dotenv.config();
 
-
+// ეს ბიბლიოთეკა საიტს მალავს ზედმეტ ინფორმაციას (მაგალითად, რომ საიტი Express-ზე მუშაობს)
+app.use(helmet());
 
 
 
@@ -41,7 +42,7 @@ app.use(cookieParser())
 
 // MongoDB-ისთვის ვაიმპორტებთ mongooseSanitize,  ჰაკერებმა შეიძლება გამოაგზავნონ {"$gt": ""} ობიექტები,
 //  რითაც ავტორიზაციას გვერდს აუვლიან. ეს ბიბლიოთეკა შლის ასეთ  $ სიმბოლოებს შემოსული მონაცემებიდან.
-app.use(mongooseSanitize());
+// app.use(mongooseSanitize());
 
 
 // ეს აუცილებელია,რომ  ათასობით პაროლი არ სცადოს წამებში მომხამრებელმა 
