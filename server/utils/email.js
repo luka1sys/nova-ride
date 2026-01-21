@@ -4,8 +4,8 @@ const sendEmail = async (email, subject, text, html) => {
     try {
         const transporter = nodemailer.createTransport({
             host: 'smtp-relay.brevo.com',
-            port: 587,
-            secure: false, // Brevo-სთვის 587 პორტზე false უნდა იყოს
+            port: 2525, // შეცვალე 587-დან 2525-ზე
+            secure: false,
             auth: {
                 user: process.env.BREVO_USER,
                 pass: process.env.BREVO_PASSWORD
