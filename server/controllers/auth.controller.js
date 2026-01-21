@@ -31,23 +31,22 @@ const createSendToken = (user, statusCode, res) => {
     })
 }
 
-// signUp ფუნქცია 
 const signUp = catchAsync(async (req, res, next) => {
-    // ვიღებთ წვდომას მონაცემებზე 
-    const { fullname, email, password } = req.body
-    // ვქმნით ახალ ობიექტს 
+    const { fullname, email, password } = req.body;
+
+    // 1. ვქმნით მომხმარებელს
     const newUser = await User.create({
         fullname,
         email,
         password
     });
+
+    // 2. ვქმნით ვერიფიკაციის ტოკენს
     const verificationToken = newUser.createVerificationToken();
     await newUser.save({ validateBeforeSave: false });
 
     const verificationURL = `${req.protocol}://${req.get('host')}/users/verify/${verificationToken}`;
 
-    // verification email-ის გაგზავნა
-    console.log('Verification URL:', verificationURL);
     const htmlMessage = `
     <div style="font-family: Arial, sans-serif; text-align: center;">
         <h2>Welcome to Fleet Rental!</h2>
@@ -56,25 +55,34 @@ const signUp = catchAsync(async (req, res, next) => {
            style="background-color: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
            Verify Email
         </a>
-    </div>
-`;
+    </div>`;
 
-    res.status(201).json({
-        status: 'success',
-        message: 'User created successfully',
-        user: newUser
-    });
+    // 3. იმეილის გაგზავნა (გამოვიყენოთ try-catch, რომ შეცდომისას ბაზაში ცვლილებები დავაბრუნოთ)
+    try {
+        await sendEmail(
+            email,
+            'Verify your account',
+            `Please verify your account here: ${verificationURL}`,
+            htmlMessage
+        );
 
-    sendEmail(
-        email,
-        'Verify your account',
-        `Please verify your account here: ${verificationURL}`,
-        htmlMessage
-    ).catch(err => {
+        // 4. მხოლოდ წარმატებული გაგზავნის შემდეგ ვაბრუნებთ პასუხს
+        res.status(201).json({
+            status: 'success',
+            message: 'User created successfully. Please check your email!',
+            user: newUser
+        });
+
+    } catch (err) {
+        // თუ იმეილი ვერ გაიგზავნა, ვშლით ტოკენებს ბაზიდან
+        newUser.verificationToken = undefined;
+        newUser.verificationTokenExpires = undefined;
+        await newUser.save({ validateBeforeSave: false });
+
         console.error("Email send error:", err);
-    });
-
-})
+        return next(new AppError('There was an error sending the email. Try again later!', 500));
+    }
+});
 
 // login 
 const login = catchAsync(async (req, res, next) => {
