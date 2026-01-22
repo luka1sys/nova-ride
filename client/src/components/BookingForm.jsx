@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useBooking } from "../contexts/BookingContext";
 import { useCars } from "../contexts/CarsContext";
-import { useTranslation } from "react-i18next"; // იმპორტი
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom"; // დავამატეთ ნავიგაცია
 
-const CreateBookingForm = ({ carId }) => {
-    const { createBooking, proccedToCheckout, error, booking } = useBooking();
+const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
+    const { createBooking, proccedToCheckout, error } = useBooking();
     const { cars } = useCars();
-    const { t } = useTranslation(); // ინიციალიზაცია
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [loading, setLoading] = useState(false);
@@ -19,9 +22,7 @@ const CreateBookingForm = ({ carId }) => {
     if (startDate && endDate) {
         const start = new Date(startDate);
         const end = new Date(endDate);
-
         days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-
         if (days > 0 && car) {
             totalPrice = days * car.pricePerDay;
         }
@@ -33,12 +34,32 @@ const CreateBookingForm = ({ carId }) => {
 
         setLoading(true);
         try {
-            const booking = await createBooking({ carId, startDate, endDate });
-            await proccedToCheckout(booking._id);
+            // 1. ვქმნით ჯავშანს (შეგიძლია გაატანო paymentMethod ბექენდზეც თუ სჭირდება)
+            const newBooking = await createBooking({ 
+                carId, 
+                startDate, 
+                endDate,
+                paymentMethod // ვატანთ არჩეულ მეთოდს
+            });
+
+            // 2. ლოგიკა გადახდის მეთოდის მიხედვით
+            if (paymentMethod === 'cash') {
+                // თუ ქეშია, პირდაპირ გადაგვიყვანოს წარმატების გვერდზე
+                navigate('/paymentsuccess');
+            } else {
+                // თუ ბარათია, გამოიძახოს ჩექაუთის ფუნქცია
+                await proccedToCheckout(newBooking._id);
+            }
+
+            // ფორმის გასუფთავება
             setStartDate("");
             setEndDate("");
+            
+            // თუ მშობელ კომპონენტს (BookingPage) რამე დამატებითი ფუნქცია აქვს
+            if (onSuccess) onSuccess();
+
         } catch (err) {
-            console.error(err);
+            console.error("Booking failed:", err);
         } finally {
             setLoading(false);
         }
@@ -48,11 +69,8 @@ const CreateBookingForm = ({ carId }) => {
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
             {/* Error Message Section */}
             {error && (
-                <div className="flex items-center gap-3 p-4 bg-red-50 border-l-4 border-[#ff3131] rounded-r-xl animate-shake">
-                    <svg className="text-[#ff3131] shrink-0" width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    <p className="text-[11px] font-black uppercase tracking-tight text-[#ff3131]">
+                <div className="flex items-center gap-3 p-4 bg-red-500/10 border-l-4 border-[#FE9A00] rounded-r-xl">
+                    <p className="text-[11px] font-black uppercase tracking-tight text-[#FE9A00]">
                         {t(error)}
                     </p>
                 </div>
@@ -60,7 +78,7 @@ const CreateBookingForm = ({ carId }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
-                    <label className="text-[10px] uppercase font-bold text-gray-400 tracking-[0.2em] ml-1">
+                    <label className="text-[10px] uppercase font-bold text-gray-500 tracking-[0.2em] ml-1">
                         {t("Pick-up Date")}
                     </label>
                     <input
@@ -68,12 +86,12 @@ const CreateBookingForm = ({ carId }) => {
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         required
-                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-[#ff3131] focus:border-transparent outline-none transition-all font-medium text-gray-700"
+                        className="w-full p-4 bg-[#151515] border border-white/5 rounded-xl text-white outline-none focus:border-[#FE9A00] transition-all"
                     />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <label className="text-[10px] uppercase font-bold text-gray-400 tracking-[0.2em] ml-1">
+                    <label className="text-[10px] uppercase font-bold text-gray-500 tracking-[0.2em] ml-1">
                         {t("Return Date")}
                     </label>
                     <input
@@ -81,49 +99,26 @@ const CreateBookingForm = ({ carId }) => {
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
                         required
-                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-[#ff3131] focus:border-transparent outline-none transition-all font-medium text-gray-700"
+                        className="w-full p-4 bg-[#151515] border border-white/5 rounded-xl text-white outline-none focus:border-[#FE9A00] transition-all"
                     />
                 </div>
             </div>
 
-            <div className="flex flex-col gap-2">
-                <label className="text-[10px] uppercase font-bold text-gray-400 tracking-[0.2em] ml-1">
-                    {t("Special Instructions (Optional)")}
-                </label>
-                <textarea
-                    placeholder={t("E.g. I will arrive late, please prepare a child seat...")}
-                    rows="3"
-                    className="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-[#ff3131] focus:border-transparent outline-none transition-all font-medium text-gray-700 resize-none"
-                ></textarea>
-            </div>
-
-            <div className="p-5 border border-white/5 rounded-2xl flex justify-between items-center bg-white/[0.03] backdrop-blur-md shadow-xl">
-                {/* მარცხენა მხარე: სტატუსი */}
+            {/* Price Summary Card */}
+            <div className="p-6 border border-white/10 rounded-2xl flex justify-between items-center bg-white/[0.02]">
                 <div className="flex items-center gap-3">
-                    <div className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-                    </div>
-                    <p className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.1em] text-white/90 italic">
-                        {t("Instant confirmation")}
+                    <div className="h-2 w-2 rounded-full bg-[#FE9A00] animate-pulse"></div>
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400">
+                        {t("Total Summary")}
                     </p>
                 </div>
 
-                {/* მარჯვენა მხარე: ფასი და დღეები */}
                 <div className="text-right">
-                    <div className="text-xl font-black text-white leading-none">
-                        {days > 0 ? (
-                            `$${totalPrice.toLocaleString()}`
-                        ) : (
-                            <span className="text-amber-500/50 text-sm uppercase tracking-widest">{t("Pending")}</span>
-                        )}
+                    <div className="text-2xl font-black text-[#FE9A00]">
+                        {days > 0 ? `$${totalPrice.toLocaleString()}` : "$0"}
                     </div>
-                    <div className="mt-1">
-                        <span className="text-[9px] text-gray-500 uppercase tracking-tighter font-bold">
-                            {days > 0 
-                                ? `${days} ${t("days total")}` 
-                                : t("Please select dates")}
-                        </span>
+                    <div className="text-[10px] text-gray-500 uppercase font-bold">
+                        {days > 0 ? `${days} ${t("days total")}` : t("Select dates")}
                     </div>
                 </div>
             </div>
@@ -131,18 +126,14 @@ const CreateBookingForm = ({ carId }) => {
             <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-5 rounded-xl font-black uppercase tracking-[0.2em] text-sm transition-all duration-300 transform active:scale-95 shadow-lg 
+                className={`w-full py-5 rounded-xl font-black uppercase tracking-[0.2em] text-sm transition-all duration-300
                     ${loading
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : "bg-black text-white hover:bg-[#ff3131] hover:shadow-red-200"
+                        ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                        : "bg-[#FE9A00] text-black hover:bg-white hover:scale-[1.01]"
                     }`}
             >
-                {loading ? t("Processing...") : t("Confirm Reservation")}
+                {loading ? t("Processing...") : paymentMethod === 'cash' ? t("Confirm & Pay Cash") : t("Proceed to Payment")}
             </button>
-
-            <p className="text-center text-[9px] text-gray-400 uppercase tracking-widest">
-                NovaRide • {t("Premium Fleet Services")}
-            </p>
         </form>
     );
 };
