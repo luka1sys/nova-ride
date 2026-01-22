@@ -120,7 +120,7 @@ const Login = () => {
             </div>
 
 
-            {/* Social Logins */}
+           
             <div className="grid grid-cols-3 gap-3">
                 {[
                     { icon: <SiGoogle size={20} />, action: googleAuth },
