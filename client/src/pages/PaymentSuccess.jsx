@@ -10,21 +10,43 @@ const PaymentSuccessPage = () => {
     const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const bookingId = searchParams.get("bookingId");
-    const { fetchMyBookings } = useBooking();
+    const { fetchMyBookings, fetchAllBookings } = useBooking();
     const { user } = useAuth();
     const isAdmin = user?.role === "admin";
     const accentColor = "#FE9A00";
 
+    // დაამატე fetchAllBookings დესტრუქტურიზაციაში
+
+
     useEffect(() => {
         if (!bookingId) return;
-        confirmBookingPayment(bookingId)
-            .then(() => fetchMyBookings())
-            .catch(err => console.error("Failed to confirm booking", err));
-    }, [bookingId, fetchMyBookings]);
+
+        const updateData = async () => {
+            try {
+                // 1. ვადასტურებთ გადახდას
+                await confirmBookingPayment(bookingId);
+
+                // 2. პატარა დაყოვნება (მაგ: 500ms), რომ ბაზამ მოასწროს სტატუსის შეცვლა
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // 3. ვაახლებთ მომხმარებლის პირად ჯავშნებს
+                await fetchMyBookings();
+
+                // 4. თუ ადმინია, ვაახლებთ ყველა ჯავშნის სიასაც (ესაა მთავარი!)
+                if (user?.role === 'admin') {
+                    await fetchAllBookings();
+                }
+            } catch (err) {
+                console.error("Failed to confirm booking", err);
+            }
+        };
+
+        updateData();
+    }, [bookingId, user, fetchMyBookings, fetchAllBookings]);
 
     return (
         <section className="bg-[#050505] min-h-screen py-10 md:py-20 px-4 md:px-6 relative overflow-hidden font-sans flex items-center justify-center">
-            
+
             {/* Background Typography - Hidden on small mobile to avoid clutter */}
             <div className="absolute top-10 left-10 text-[15vw] md:text-[10vw] font-black text-white/[0.01] leading-none select-none pointer-events-none uppercase hidden xs:block">
                 {t("SUCCESS")}
@@ -43,11 +65,11 @@ const PaymentSuccessPage = () => {
                                     {t("Transaction Completed")}
                                 </span>
                             </div>
-                            
+
                             <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight tracking-tight mb-4">
                                 {t("Booking")} <span className="text-white/50 font-light">{t("Confirmed.")}</span>
                             </h2>
-                            
+
                             <p className="text-gray-500 text-xs md:text-sm leading-relaxed max-w-md">
                                 {t("Your reservation has been secured. A confirmation email is being prepared for your inbox.")}
                             </p>
@@ -97,7 +119,7 @@ const PaymentSuccessPage = () => {
                                 alt="Success"
                             />
                         </div>
-                        
+
                         {/* Decorative Circles - Scaled for mobile */}
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full border border-white/[0.03] rounded-full animate-spin-slow"></div>
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 h-2/3 border border-white/[0.05] rounded-full"></div>
