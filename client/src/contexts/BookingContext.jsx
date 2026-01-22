@@ -32,20 +32,20 @@ export const BookingProvider = ({ children }) => {
             const response = await apiCreateBooking(data);
             const newBooking = response.data.booking;
 
-            // 1. ჯერ ვინახავთ ამ ერთ კონკრეტულ ჯავშანს (თუ სადმე იყენებ)
+            // 1. ჯერ ვინახავთ ძირითად ობიექტს
             setBooking(newBooking);
 
-            // 2. მთავარი გამოსავალი: ხელახლა ვტვირთავთ მომხმარებლის ყველა ჯავშანს.
-            // ეს უზრუნველყოფს, რომ სიაში ახალი ჯავშანი სრული მონაცემებით (User, Car) გამოჩნდეს.
+            // 2. მნიშვნელოვანია: დაველოდოთ მონაცემების ხელახლა წამოღებას ბექენდიდან
+            // ეს წამოიღებს სრულად "დაპოპულირებულ" (Populated) User-ს და სწორ სტატუსს
             await fetchMyBookings();
 
-            // 3. თუ ადმინია, ადმინის სიასაც ვაახლებთ
+            // 3. თუ მომხმარებელი ადმინია, განვუახლოთ ადმინის პანელის სია
             if (user?.role === 'admin') {
                 await fetchAllBookings();
             }
 
             toast.update(toastId, {
-                render: 'processed successfully',
+                render: 'Processed successfully',
                 type: 'success',
                 isLoading: false,
                 autoClose: 2000
