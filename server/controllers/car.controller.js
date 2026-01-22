@@ -17,8 +17,16 @@ const addCar = catchAsync(async (req, res, next) => {
     // თუ ფრონტიდან მოდის უბრალოდ "tbilisi", ჩვენ ის უნდა ჩავსვათ address ველში
     let formattedLocation;
     if (typeof location === 'string') {
-        formattedLocation = { address: location };
+        // თუ ფრონტიდან მხოლოდ სტრინგი მოვიდა (მაგ: ინპუტიდან)
+        try {
+            // ვცდილობთ დავაპარსოთ, თუ შემთხვევით JSON სტრინგია
+            formattedLocation = JSON.parse(location);
+        } catch (e) {
+            // თუ ჩვეულებრივი ტექსტია
+            formattedLocation = { address: location };
+        }
     } else {
+        // თუ უკვე ობიექტია (რომელსაც მოყვება coordinates)
         formattedLocation = location;
     }
 
@@ -152,9 +160,14 @@ const updateCar = catchAsync(async (req, res, next) => {
 
     // 3. ლოკაციის გასწორება (აი ეს აკლდა!)
     let formattedLocation = car.location; // დეფოლტად ძველი დავტოვოთ
+
     if (location) {
         if (typeof location === 'string') {
-            formattedLocation = { address: location };
+            try {
+                formattedLocation = JSON.parse(location);
+            } catch (e) {
+                formattedLocation = { address: location };
+            }
         } else {
             formattedLocation = location;
         }

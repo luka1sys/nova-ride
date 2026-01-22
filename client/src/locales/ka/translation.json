@@ -569,5 +569,6 @@
     "Passwords do not match!": "პაროლები არ ემთხვევა!",
     "Back to Login": "უკან დაბრუნება",
     "Pick-up date cannot be in the past": "აღების თარიღი არ შეიძლება იყოს წარსულში",
-    "Return date must be after pick-up date": "დაბრუნების თარიღი უნდა იყოს აღების თარიღის შემდეგ"
+    "Return date must be after pick-up date": "დაბრუნების თარიღი უნდა იყოს აღების თარიღის შემდეგ",
+    "Reset":"აღდგენა"
 }
