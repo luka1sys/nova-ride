@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { authoLogin, changePassword, deleteUser, getAllUsers, loginUser, logoutUser, signupUser, updateMe, updateUser } from "../services/authservice";
+import { authoLogin, changePassword, deleteUser, forgotPassword, getAllUsers, loginUser, logoutUser, resetPassword, signupUser, updateMe, updateUser } from "../services/authservice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 const AuthContext = createContext();
