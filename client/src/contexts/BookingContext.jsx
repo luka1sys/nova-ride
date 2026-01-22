@@ -30,15 +30,28 @@ export const BookingProvider = ({ children }) => {
         const toastId = toast.loading('processing...');
         try {
             const response = await apiCreateBooking(data);
-            setBooking(response.data.booking);
+
+            // მნიშვნელოვანია: ჯერ გამოვაცხადოთ ცვლადი response-დან
+            const newBookingData = response.data.booking;
+
+            setBooking(newBookingData);
+
+            // 1. ვამატებთ მომხმარებლის პირად სიაში
+            setMyBookings((prev) => [newBookingData, ...prev]);
+
+            // 2. თუ ადმინია, ვამატებთ საერთო სიაშიც
+            if (user?.role === 'admin') {
+                setAllBookings((prev) => [newBookingData, ...prev]);
+            }
+
             toast.update(toastId, {
                 render: 'processed successfully',
                 type: 'success',
                 isLoading: false,
                 autoClose: 2000
-            })
+            });
 
-            return response.data.booking;
+            return newBookingData; // ვაბრუნებთ მონაცემებს
         } catch (err) {
             toast.update(toastId, {
                 render: err?.response?.data?.message || "Booking failed",
