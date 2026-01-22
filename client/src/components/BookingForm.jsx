@@ -9,7 +9,7 @@ const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
     const { cars } = useCars();
     const { t } = useTranslation();
     const navigate = useNavigate();
-    
+
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [loading, setLoading] = useState(false);
@@ -34,29 +34,30 @@ const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
 
         setLoading(true);
         try {
-            // 1. ვქმნით ჯავშანს (შეგიძლია გაატანო paymentMethod ბექენდზეც თუ სჭირდება)
-            const newBooking = await createBooking({ 
-                carId, 
-                startDate, 
+            // 1. ჯერ ვქმნით ჯავშანს
+            const newBooking = await createBooking({
+                carId,
+                startDate,
                 endDate,
-                paymentMethod // ვატანთ არჩეულ მეთოდს
+                paymentMethod
             });
 
-            // 2. ლოგიკა გადახდის მეთოდის მიხედვით
+            // 2. ვამოწმებთ გადახდის მეთოდს
             if (paymentMethod === 'cash') {
-                // თუ ქეშია, პირდაპირ გადაგვიყვანოს წარმატების გვერდზე
+                // თუ ქეშია - პირდაპირ წარმატების გვერდზე
                 navigate('/paymentsuccess');
-            } else {
-                // თუ ბარათია, გამოიძახოს ჩექაუთის ფუნქცია
+            } else if (paymentMethod === 'card') {
+                // თუ ბარათია - ჯერ გადავიყვანოთ სტრაიპზე
+                // აქ navigate('/paymentsuccess') არ უნდა ეწეროს!
                 await proccedToCheckout(newBooking._id);
+
+                // შენიშვნა: Stripe-იდან უკან დაბრუნებას (წარმატების შემთხვევაში) 
+                // ბექენდი და Stripe-ის კონფიგურაცია აკონტროლებს (success_url)
             }
 
-            // ფორმის გასუფთავება
+            // ფორმის გასუფთავება მხოლოდ წარმატების შემთხვევაში
             setStartDate("");
             setEndDate("");
-            
-            // თუ მშობელ კომპონენტს (BookingPage) რამე დამატებითი ფუნქცია აქვს
-            if (onSuccess) onSuccess();
 
         } catch (err) {
             console.error("Booking failed:", err);
@@ -64,7 +65,6 @@ const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
             setLoading(false);
         }
     };
-
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
             {/* Error Message Section */}
@@ -122,7 +122,7 @@ const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
                     </div>
                 </div>
             </div>
-            
+
             <button
                 type="submit"
                 disabled={loading}
