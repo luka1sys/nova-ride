@@ -295,7 +295,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     // 3) ვუგზავნით მეილზე ლინკს
-    const resetURL = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`;
+    const resetURL = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`;
 
     const message = `Forgot your password? Submit a new password to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
 

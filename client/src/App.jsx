@@ -87,7 +87,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/cars" element={<CarsPage />} />
         <Route path="/forgot-password" element={<ForgotPassword/>} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/resetPassword/:token" element={<ResetPassword />} />
 
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contactus" element={<ConactUs />} />
