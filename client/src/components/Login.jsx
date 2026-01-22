@@ -58,9 +58,9 @@ const Login = () => {
                     <label htmlFor="password" className="block text-sm font-medium text-gray-400">
                         {t("Password")}
                     </label>
-                    <a href="#" className="text-xs font-semibold hover:underline transition-colors" style={{ color: accentColor }}>
+                    <Link to="/forgot-password" className="text-xs font-semibold hover:underline transition-colors" style={{ color: accentColor }}>
                         {t("Forgot?")}
-                    </a>
+                    </Link>
                 </div>
                 <div className="relative group">
                     <input
@@ -87,11 +87,11 @@ const Login = () => {
 
             {/* Remember Me */}
             <div className="flex items-center gap-3 px-1">
-                <div 
+                <div
                     onClick={() => setRememberMe(!rememberMe)}
                     className="relative w-10 h-5 bg-white/5 rounded-full border border-white/10 cursor-pointer transition-all overflow-hidden"
                 >
-                    <motion.div 
+                    <motion.div
                         animate={{ x: rememberMe ? 22 : 2 }}
                         className="absolute top-1 w-3 h-3 rounded-full mt-[0.5px] transition-colors"
                         style={{ backgroundColor: rememberMe ? accentColor : '#4B5563' }}
@@ -118,7 +118,7 @@ const Login = () => {
                 <span className="text-sm text-gray-600">{t("Or continue with")}</span>
                 <div className="h-[1px] flex-1 bg-white/5" />
             </div>
-            <Link to="/forgot-password">დაგავიწყდათ პაროლი?</Link>
+
 
             {/* Social Logins */}
             <div className="grid grid-cols-3 gap-3">
