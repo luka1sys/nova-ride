@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Link } from 'react-router-dom';
-import { FiMail, FiArrowLeft } from 'react-icons/fi'; // დააინსტალირე react-icons თუ არ გაქვს
+import { Mail, ArrowLeft } from 'lucide-react'; // სურვილისამებრ, ხატულებისთვის
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -13,66 +12,57 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-[#050505] p-6">
-            <div className="w-full max-w-md bg-[#111111] border border-white/10 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
-                
-                {/* დეკორატიული ელემენტი (ნარინჯისფერი ნათება ბექგრაუნდზე) */}
-                <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#fe9a00] opacity-10 blur-[80px] rounded-full"></div>
-
-                {/* უკან დაბრუნების ღილაკი */}
-                <Link 
-                    to="/authentication" 
-                    className="flex items-center text-gray-500 hover:text-[#fe9a00] transition-colors mb-8 text-sm group"
-                >
-                    <FiArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />
-                    Back to Login
-                </Link>
-
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-extrabold text-white mb-3">
-                        Forgot <span className="text-[#fe9a00]">Password?</span>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl">
+                {/* სათაური და ტექსტი */}
+                <div className="text-center">
+                    <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+                        პაროლის აღდგენა
                     </h2>
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                        Enter your email address and we'll send you a link to reset your password.
+                    <p className="mt-2 text-sm text-gray-600">
+                        შეიყვანეთ თქვენი ელ-ფოსტა და გამოგიგზავნით აღდგენის ლინკს.
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="relative">
-                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1 mb-2 block">
-                            Email Address
-                        </label>
-                        <div className="relative group">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-[#fe9a00] transition-colors">
-                                <FiMail size={18} />
-                            </div>
-                            <input 
-                                type="email" 
-                                placeholder="name@example.com" 
-                                className="w-full bg-[#0a0a0a] border border-white/10 p-4 pl-11 rounded-xl text-white focus:border-[#fe9a00] focus:ring-1 focus:ring-[#fe9a00] outline-none transition-all placeholder:text-gray-700"
+                {/* ფორმა */}
+                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                    <div className="rounded-md shadow-sm -space-y-px">
+                        <div className="relative">
+                            <label htmlFor="email-address" className="sr-only">
+                                ელ-ფოსტა
+                            </label>
+                            <input
+                                id="email-address"
+                                name="email"
+                                type="email"
+                                autoComplete="email"
+                                required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                required 
+                                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                placeholder="თქვენი იმეილი"
                             />
                         </div>
                     </div>
 
-                    <button 
-                        type="submit"
-                        className="w-full bg-[#fe9a00] text-black font-bold py-4 rounded-xl hover:bg-[#e68a00] active:scale-[0.98] transition-all shadow-[0_4px_15px_rgba(254,154,0,0.2)]"
-                    >
-                        Send Reset Link
-                    </button>
-                </form>
+                    {/* ღილაკი */}
+                    <div>
+                        <button
+                            type="submit"
+                            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                        >
+                            ლინკის გაგზავნა
+                        </button>
+                    </div>
 
-                <div className="mt-8 text-center">
-                    <p className="text-gray-500 text-xs">
-                        Don't have an account? 
-                        <Link to="/authentication" className="text-[#fe9a00] ml-2 hover:underline font-semibold">
-                            Sign Up
-                        </Link>
-                    </p>
-                </div>
+                    {/* უკან დაბრუნება */}
+                    <div className="text-center mt-4">
+                        <a href="/login" className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                            <span className="mr-2">←</span>
+                            უკან დაბრუნება
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
     );
