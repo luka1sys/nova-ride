@@ -14,6 +14,9 @@ export const deleteUser = (id) => API.delete(`/delete/${id}`);
 export const authoLogin = () => API.get('/me')
 export const changePassword = (data) => API.patch('/change-password', data);
 export const updateMe = (data) => API.patch('/update-me', data);
+export const forgotPassword = (data) => API.post('/forgotPassword', data);
+// პაროლის შეცვლა ტოკენის გამოყენებით
+export const resetPassword = (token, data) => API.patch(`/resetPassword/${token}`, data)
 export const googleAuth = () => {
     window.location.href = `${BASEURL}/oauth/google`;
 };

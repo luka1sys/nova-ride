@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { Mail, Eye, EyeOff, ArrowRight } from 'react-feather';
 import { IconLock, IconFingerprint } from '@tabler/icons-react';
 import { SiGoogle, SiFacebook, SiApple } from 'react-icons/si';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { googleAuth } from "../services/authservice";
 import { motion } from "framer-motion";
 import { useTranslation } from 'react-i18next'; // იმპორტი
@@ -118,6 +118,7 @@ const Login = () => {
                 <span className="text-sm text-gray-600">{t("Or continue with")}</span>
                 <div className="h-[1px] flex-1 bg-white/5" />
             </div>
+            <Link to="/forgot-password">დაგავიწყდათ პაროლი?</Link>
 
             {/* Social Logins */}
             <div className="grid grid-cols-3 gap-3">

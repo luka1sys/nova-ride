@@ -17,6 +17,8 @@ import Car from './pages/Car';
 import ConactUs from './pages/ContactUs';
 import Service from './pages/Service';
 import ScrollToTop from './utils/ScrollToTop';
+import ForgotPassword from './components/ForgotPasswordForm';
+import ResetPassword from './components/ResetPasswordForm';
 
 // დამცავი კომპონენტი როუტებისთვის
 const ProtectedRoute = ({ children, adminOnly = false }) => {
@@ -83,7 +85,9 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/cars" element={<CarsPage />} />
-        
+        <Route path="/forgot-password" element={<ForgotPassword/>} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contactus" element={<ConactUs />} />
         <Route path="/authentication" element={<AuthenticationPage />} />

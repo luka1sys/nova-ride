@@ -136,7 +136,7 @@ export const AuthProvider = ({ children }) => {
         const toastId = toast.loading('Updating profile...');
         try {
             const { data } = await updateMe(updateData);
-            setUser(data.user); 
+            setUser(data.user);
             toast.update(toastId, {
                 render: 'Profile updated successfully',
                 type: 'success',
@@ -221,8 +221,51 @@ export const AuthProvider = ({ children }) => {
             });
         }
     }
+
+    const forgotPasswordAction = async (email) => {
+        const toastId = toast.loading('Sending reset link...');
+        try {
+            await forgotPassword({ email });
+            toast.update(toastId, {
+                render: 'Reset link sent to your email!',
+                type: 'success',
+                isLoading: false,
+                autoClose: 3000
+            });
+        } catch (err) {
+            toast.update(toastId, {
+                render: err.response?.data?.message || "Failed to send link",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+        }
+    };
+
+    const resetPasswordAction = async (token, newPassword) => {
+        const toastId = toast.loading('Resetting password...');
+        try {
+            await resetPassword(token, { password: newPassword });
+            toast.update(toastId, {
+                render: 'Password reset successfully! You can now log in.',
+                type: 'success',
+                isLoading: false,
+                autoClose: 3000
+            });
+            navigate('/authentication'); // გადავიყვანოთ ავტორიზაციის გვერდზე
+        } catch (err) {
+            toast.update(toastId, {
+                render: err.response?.data?.message || "Link expired or invalid",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+        }
+    };
+
+
     return (
-        <AuthContext.Provider value={{ userCount: users.length, user, users, activeTab, setActiveTab, signup, login, logout, updateUserrr, changeUserPassword, deleteUserrr, updateMyProfile }}>
+        <AuthContext.Provider value={{ userCount: users.length, user, users, activeTab, setActiveTab, signup, login, logout, updateUserrr, changeUserPassword, deleteUserrr, updateMyProfile, forgotPasswordAction, resetPasswordAction }}>
             {children}
         </AuthContext.Provider>
     )

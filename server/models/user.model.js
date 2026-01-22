@@ -44,7 +44,9 @@ const userSchema = mongoose.Schema({
         default: null
     },
     verificationToken: String,
-    verificationTokenExpires: Date
+    verificationTokenExpires: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date
 })
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
