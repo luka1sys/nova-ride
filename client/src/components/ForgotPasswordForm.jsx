@@ -22,25 +22,26 @@ const ForgotPassword = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4">
-            <div className="max-w-md w-full space-y-8 bg-black p-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-zinc-800">
+            {/* პედინგი p-10-დან p-8-მდე შევამცირე სიმაღლის დასაკლებად */}
+            <div className="max-w-md w-full space-y-6 bg-black p-8 rounded-[2rem] shadow-2xl border border-zinc-800">
                 
                 {/* Icon & Title Section */}
                 <div className="text-center">
-                    <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-3xl bg-zinc-900 border border-zinc-800 rotate-3 mb-6 transition-transform hover:rotate-0 duration-300">
-                        <Mail className="h-10 w-10" style={{ color: 'rgb(254, 154, 0)' }} />
+                    <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-2xl bg-zinc-900 border border-zinc-800 mb-4 transition-transform hover:scale-105 duration-300">
+                        <Mail className="h-8 w-8" style={{ color: 'rgb(254, 154, 0)' }} />
                     </div>
-                    <h2 className="text-3xl font-black text-white uppercase tracking-[0.2em]">
+                    <h2 className="text-2xl font-bold text-white tracking-tight">
                         Reset <span style={{ color: 'rgb(254, 154, 0)' }}>Password</span>
                     </h2>
-                    <p className="mt-4 text-sm text-zinc-500 font-medium leading-relaxed">
-                        Enter your secure email address. We'll send a recovery link to your inbox.
+                    <p className="mt-2 text-sm text-zinc-500 leading-snug">
+                        Enter your email address and we'll send a recovery link to your inbox.
                     </p>
                 </div>
 
-                <form className="mt-10 space-y-6" onSubmit={handleSubmit}>
-                    <div className="space-y-2">
-                        <label htmlFor="email-address" className="block text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">
-                            Identification Email
+                <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
+                    <div className="space-y-1.5">
+                        <label htmlFor="email-address" className="block text-xs font-medium text-zinc-400 ml-1">
+                            Email Address
                         </label>
                         <div className="relative group">
                             <input
@@ -51,37 +52,37 @@ const ForgotPassword = () => {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="appearance-none rounded-2xl relative block w-full px-5 py-4 border border-zinc-800 bg-zinc-900/50 text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-[rgb(254,154,0)] focus:border-transparent transition-all duration-300"
+                                className="appearance-none rounded-xl relative block w-full px-4 py-3 border border-zinc-800 bg-zinc-900/40 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-[rgb(254, 154, 0)] transition-all duration-300"
                                 placeholder="name@example.com"
                             />
                         </div>
                     </div>
 
                     {/* Submit Button */}
-                    <div className="pt-2">
+                    <div className="pt-1">
                         <button
                             type="submit"
                             style={{ backgroundColor: 'rgb(254, 154, 0)' }}
-                            className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-xs font-black rounded-2xl text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-[0_10px_20px_rgba(254,154,0,0.2)] uppercase tracking-[0.15em]"
+                            className="group relative w-full flex justify-center py-3.5 px-4 border border-transparent text-sm font-semibold rounded-xl text-black hover:opacity-90 active:scale-[0.98] transition-all duration-300 shadow-lg"
                         >
-                            Request Reset Link
+                            Send Reset Link
                         </button>
                     </div>
 
                     {/* Footer Section */}
-                    <div className="flex flex-col items-center space-y-6 mt-8">
+                    <div className="flex flex-col items-center space-y-4 pt-2">
                         <button 
                             type="button"
                             onClick={() => navigate('/authentication')}
-                            className="inline-flex items-center text-[11px] font-black text-zinc-500 hover:text-[rgb(254,154,0)] uppercase tracking-widest transition-colors duration-300 group"
+                            className="inline-flex items-center text-sm text-zinc-400 hover:text-[rgb(254, 154, 0)] transition-colors duration-300 group"
                         >
                             <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                            Back to Secure Login
+                            Back to Login
                         </button>
                         
-                        <div className="flex items-center gap-2 text-[10px] text-zinc-700 font-bold uppercase tracking-tighter italic">
+                        <div className="flex items-center gap-1.5 text-[10px] text-zinc-600">
                             <ShieldCheck size={12} />
-                            End-to-end encrypted recovery
+                            <span>Secure recovery process</span>
                         </div>
                     </div>
                 </form>
