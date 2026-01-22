@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom'; // ტოკენის ამოსაღებად
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
+
 
 const ResetPassword = () => {
     const { token } = useParams(); // იღებს ტოკენს URL-იდან (:token)

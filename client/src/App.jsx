@@ -52,14 +52,15 @@ function App() {
     };
 
     window.addEventListener("mousemove", moveDot);
+
     return () => window.removeEventListener("mousemove", moveDot);
   }, [loading]);
+
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen bg-[#050505]">
         <div className="relative">
-
           <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-[#fe9a00] shadow-[0_0_20px_rgba(254,154,0,0.3)]"></div>
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-[#fe9a00] font-bold text-sm tracking-widest">NR</span>
