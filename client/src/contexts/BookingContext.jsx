@@ -30,18 +30,18 @@ export const BookingProvider = ({ children }) => {
         const toastId = toast.loading('processing...');
         try {
             const response = await apiCreateBooking(data);
+            const newBooking = response.data.booking;
 
-            // მნიშვნელოვანია: ჯერ გამოვაცხადოთ ცვლადი response-დან
-            const newBookingData = response.data.booking;
+            // 1. ჯერ ვინახავთ ამ ერთ კონკრეტულ ჯავშანს (თუ სადმე იყენებ)
+            setBooking(newBooking);
 
-            setBooking(newBookingData);
+            // 2. მთავარი გამოსავალი: ხელახლა ვტვირთავთ მომხმარებლის ყველა ჯავშანს.
+            // ეს უზრუნველყოფს, რომ სიაში ახალი ჯავშანი სრული მონაცემებით (User, Car) გამოჩნდეს.
+            await fetchMyBookings();
 
-            // 1. ვამატებთ მომხმარებლის პირად სიაში
-            setMyBookings((prev) => [newBookingData, ...prev]);
-
-            // 2. თუ ადმინია, ვამატებთ საერთო სიაშიც
+            // 3. თუ ადმინია, ადმინის სიასაც ვაახლებთ
             if (user?.role === 'admin') {
-                setAllBookings((prev) => [newBookingData, ...prev]);
+                await fetchAllBookings();
             }
 
             toast.update(toastId, {
@@ -51,7 +51,7 @@ export const BookingProvider = ({ children }) => {
                 autoClose: 2000
             });
 
-            return newBookingData; // ვაბრუნებთ მონაცემებს
+            return newBooking;
         } catch (err) {
             toast.update(toastId, {
                 render: err?.response?.data?.message || "Booking failed",
