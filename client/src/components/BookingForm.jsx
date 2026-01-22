@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useBooking } from "../contexts/BookingContext";
 import { useCars } from "../contexts/CarsContext";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom"; // დავამატეთ ნავიგაცია
+import { useNavigate } from "react-router-dom";
 
-const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
+const CreateBookingForm = ({ carId, paymentMethod }) => {
     const { createBooking, proccedToCheckout, error } = useBooking();
     const { cars } = useCars();
     const { t } = useTranslation();
@@ -13,6 +13,9 @@ const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [loading, setLoading] = useState(false);
+
+    // მიმდინარე თარიღის მიღება ფორმატში: YYYY-MM-DD
+    const today = new Date().toISOString().split("T")[0];
 
     const car = cars?.find(c => c._id === carId);
 
@@ -30,11 +33,24 @@ const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!startDate || !endDate) return alert(t("Please select both dates"));
+        
+        // 1. თარიღების ვალიდაცია
+        if (!startDate || !endDate) {
+            return alert(t("Please select both dates"));
+        }
+
+        // 2. შემოწმება: ხომ არ არის არჩეული წარსული თარიღი
+        if (startDate < today) {
+            return alert(t("Pick-up date cannot be in the past"));
+        }
+
+        // 3. შემოწმება: დაბრუნების თარიღი უნდა იყოს აღების თარიღზე გვიან
+        if (endDate <= startDate) {
+            return alert(t("Return date must be after pick-up date"));
+        }
 
         setLoading(true);
         try {
-            // 1. ჯერ ვქმნით ჯავშანს
             const newBooking = await createBooking({
                 carId,
                 startDate,
@@ -42,20 +58,12 @@ const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
                 paymentMethod
             });
 
-            // 2. ვამოწმებთ გადახდის მეთოდს
             if (paymentMethod === 'cash') {
-                // თუ ქეშია - პირდაპირ წარმატების გვერდზე
                 navigate('/paymentsuccess');
             } else if (paymentMethod === 'card') {
-                // თუ ბარათია - ჯერ გადავიყვანოთ სტრაიპზე
-                // აქ navigate('/paymentsuccess') არ უნდა ეწეროს!
                 await proccedToCheckout(newBooking._id);
-
-                // შენიშვნა: Stripe-იდან უკან დაბრუნებას (წარმატების შემთხვევაში) 
-                // ბექენდი და Stripe-ის კონფიგურაცია აკონტროლებს (success_url)
             }
 
-            // ფორმის გასუფთავება მხოლოდ წარმატების შემთხვევაში
             setStartDate("");
             setEndDate("");
 
@@ -65,9 +73,9 @@ const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
             setLoading(false);
         }
     };
+
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
-            {/* Error Message Section */}
             {error && (
                 <div className="flex items-center gap-3 p-4 bg-red-500/10 border-l-4 border-[#FE9A00] rounded-r-xl">
                     <p className="text-[11px] font-black uppercase tracking-tight text-[#FE9A00]">
@@ -84,6 +92,7 @@ const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
                     <input
                         type="date"
                         value={startDate}
+                        min={today} // მომხმარებელი კალენდარში წარსულს ვერ აირჩევს
                         onChange={(e) => setStartDate(e.target.value)}
                         required
                         className="w-full p-4 bg-[#151515] border border-white/5 rounded-xl text-white outline-none focus:border-[#FE9A00] transition-all"
@@ -97,6 +106,7 @@ const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
                     <input
                         type="date"
                         value={endDate}
+                        min={startDate || today} // დაბრუნება ვერ იქნება აღებაზე ადრე
                         onChange={(e) => setEndDate(e.target.value)}
                         required
                         className="w-full p-4 bg-[#151515] border border-white/5 rounded-xl text-white outline-none focus:border-[#FE9A00] transition-all"
@@ -104,7 +114,6 @@ const CreateBookingForm = ({ carId, paymentMethod, onSuccess }) => {
                 </div>
             </div>
 
-            {/* Price Summary Card */}
             <div className="p-6 border border-white/10 rounded-2xl flex justify-between items-center bg-white/[0.02]">
                 <div className="flex items-center gap-3">
                     <div className="h-2 w-2 rounded-full bg-[#FE9A00] animate-pulse"></div>
