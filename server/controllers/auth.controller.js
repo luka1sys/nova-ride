@@ -51,10 +51,9 @@ const signUp = catchAsync(async (req, res, next) => {
         
         <div style="background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%); padding: 30px; text-align: center;">
             <div style="font-size: 28px; font-weight: 800; color: #ffffff; letter-spacing: 2px; text-transform: uppercase;">
-                Fleet <span style="color: #00d2ff;">Rental</span>
+                <span style="color: #ff9500;">NovaRide</span>
             </div>
         </div>
-
         <div style="padding: 50px 40px; text-align: center;">
             <div style="margin-bottom: 25px;">
                 <div style="display: inline-block; background-color: #e3f2fd; padding: 15px; border-radius: 50%; margin-bottom: 20px;">
@@ -63,11 +62,11 @@ const signUp = catchAsync(async (req, res, next) => {
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                 </div>
-                <h2 style="margin: 0; color: #1a1a1a; font-size: 26px; font-weight: 700;">თითქმის მზად ხართ!</h2>
+                <h2 style="margin: 0; color: #1a1a1a; font-size: 26px; font-weight: 700;">You’re almost ready!</h2>
             </div>
 
             <p style="font-size: 17px; line-height: 1.7; color: #5c6c75; margin-bottom: 30px;">
-                მადლობა Fleet Rental-ით დაინტერესებისთვის. თქვენი ანგარიშის გასააქტიურებლად საჭიროა მხოლოდ ერთი ნაბიჯი — დაადასტურეთ თქვენი იმეილი.
+               Thank you for your interest in Fleet Rental. To activate your account, only one step is required — please confirm your email.
             </p>
             
             <div style="margin: 40px 0;">
