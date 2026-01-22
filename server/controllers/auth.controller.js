@@ -46,14 +46,55 @@ const signUp = catchAsync(async (req, res, next) => {
     const verificationURL = `${req.protocol}://${req.get('host')}/api/users/verify/${verificationToken}`;
 
     const htmlMessage = `
-    <div style="font-family: Arial, sans-serif; text-align: center;">
-        <h2>Welcome to Fleet Rental!</h2>
-        <p>Please click the button below to verify your email address:</p>
-        <a href="${verificationURL}" 
-           style="background-color: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-           Verify Email
-        </a>
-    </div>`;
+<div style="background-color: #f0f2f5; padding: 60px 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2d3436;">
+    <div style="max-width: 550px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+        
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%); padding: 30px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 800; color: #ffffff; letter-spacing: 2px; text-transform: uppercase;">
+                Fleet <span style="color: #00d2ff;">Rental</span>
+            </div>
+        </div>
+
+        <div style="padding: 50px 40px; text-align: center;">
+            <div style="margin-bottom: 25px;">
+                <div style="display: inline-block; background-color: #e3f2fd; padding: 15px; border-radius: 50%; margin-bottom: 20px;">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0052cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <h2 style="margin: 0; color: #1a1a1a; font-size: 26px; font-weight: 700;">თითქმის მზად ხართ!</h2>
+            </div>
+
+            <p style="font-size: 17px; line-height: 1.7; color: #5c6c75; margin-bottom: 30px;">
+                მადლობა Fleet Rental-ით დაინტერესებისთვის. თქვენი ანგარიშის გასააქტიურებლად საჭიროა მხოლოდ ერთი ნაბიჯი — დაადასტურეთ თქვენი იმეილი.
+            </p>
+            
+            <div style="margin: 40px 0;">
+                <a href="${verificationURL}" 
+                   style="background: linear-gradient(to right, #0052cc, #007aff); color: #ffffff; padding: 18px 45px; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 5px 15px rgba(0, 82, 204, 0.3);">
+                    Verify Your Email
+                </a>
+            </div>
+            
+            <hr style="border: 0; border-top: 1px solid #edf2f7; margin: 40px 0;">
+            
+            <p style="font-size: 13px; color: #a0aec0; line-height: 1.5;">
+                If the button above doesn't work, please visit the link below: <br>
+                <a href="${verificationURL}" style="color: #0052cc; text-decoration: none; word-break: break-all;">${verificationURL}</a>
+            </p>
+        </div>
+
+        <div style="background-color: #fcfcfc; padding: 25px; text-align: center; border-top: 1px solid #f1f1f1;">
+            <p style="font-size: 12px; color: #bdc3c7; margin-bottom: 8px;">
+                If this registration does not belong to you, simply delete this email.
+            </p>
+            <p style="font-size: 12px; color: #95a5a6; font-weight: bold; margin: 0;">
+                © 2024 Fleet Rental Team.
+            </p>
+        </div>
+    </div>
+</div>`;
 
     // 1. იმეილს ვუშვებთ ფონურ რეჟიმში (await-ის გარეშე)
     sendEmail(
