@@ -8,13 +8,13 @@ const sendEmail = async (email, subject, text, html) => {
             secure: false,
             auth: {
                 // აქ აუცილებლად შენი იმეილი ჩაწერე .env-ში
-                user: process.env.BREVO_USER, 
+                user: process.env.BREVO_USER,
                 pass: process.env.BREVO_PASSWORD
             }
         });
 
         const mailOptions = {
-            from: `"NovaRide" <${process.env.BREVO_USER}>`,
+            from: `"NovaRide" <${process.env.BREVO_SENDER}>`,
             to: email,
             subject: subject,
             text: text,
