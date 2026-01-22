@@ -1,36 +1,51 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Mail, ArrowLeft } from 'lucide-react'; // სურვილისამებრ, ხატულებისთვის
+import { useNavigate } from 'react-router-dom';
+import { Mail, ArrowLeft } from 'lucide-react';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const { forgotPasswordAction } = useAuth();
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        forgotPasswordAction(email);
+        try {
+            await forgotPasswordAction(email);
+            
+            // Redirect to authentication page after 2 seconds
+            setTimeout(() => {
+                navigate('/authentication');
+            }, 2000);
+            
+        } catch (err) {
+            console.error("Failed to send link", err);
+        }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl">
-                {/* სათაური და ტექსტი */}
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+            <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-3xl shadow-2xl border border-gray-200">
+                {/* Header Section */}
                 <div className="text-center">
-                    <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-                        პაროლის აღდგენა
+                    <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gray-900 mb-4">
+                        <Mail className="h-8 w-8" style={{ color: 'rgb(254, 154, 0)' }} />
+                    </div>
+                    <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight">
+                        Reset Password
                     </h2>
-                    <p className="mt-2 text-sm text-gray-600">
-                        შეიყვანეთ თქვენი ელ-ფოსტა და გამოგიგზავნით აღდგენის ლინკს.
+                    <p className="mt-3 text-sm text-gray-500 font-medium">
+                        Enter your email address and we'll send you a link to reset your password.
                     </p>
                 </div>
 
-                {/* ფორმა */}
+                {/* Form Section */}
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="rounded-md shadow-sm -space-y-px">
+                    <div className="space-y-2">
+                        <label htmlFor="email-address" className="block text-xs font-bold text-gray-700 uppercase ml-1">
+                            Email Address
+                        </label>
                         <div className="relative">
-                            <label htmlFor="email-address" className="sr-only">
-                                ელ-ფოსტა
-                            </label>
                             <input
                                 id="email-address"
                                 name="email"
@@ -39,28 +54,33 @@ const ForgotPassword = () => {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                                placeholder="თქვენი იმეილი"
+                                className="appearance-none rounded-xl relative block w-full px-4 py-3.5 border border-gray-300 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 bg-gray-50"
+                                placeholder="name@example.com"
                             />
                         </div>
                     </div>
 
-                    {/* ღილაკი */}
+                    {/* Submit Button */}
                     <div>
                         <button
                             type="submit"
-                            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                            style={{ backgroundColor: 'rgb(254, 154, 0)' }}
+                            className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-black rounded-xl text-black hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-300 shadow-lg uppercase tracking-wider"
                         >
-                            ლინკის გაგზავნა
+                            Send Reset Link
                         </button>
                     </div>
 
-                    {/* უკან დაბრუნება */}
-                    <div className="text-center mt-4">
-                        <a href="/login" className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
-                            <span className="mr-2">←</span>
-                            უკან დაბრუნება
-                        </a>
+                    {/* Back to Login */}
+                    <div className="text-center mt-6">
+                        <button 
+                            type="button"
+                            onClick={() => navigate('/authentication')}
+                            className="inline-flex items-center text-sm font-bold text-gray-600 hover:text-black transition-colors duration-200 group"
+                        >
+                            <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+                            Back to Login
+                        </button>
                     </div>
                 </form>
             </div>
