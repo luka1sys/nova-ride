@@ -130,55 +130,63 @@ const updateCar = catchAsync(async (req, res, next) => {
     let car = await Car.findById(req.params.id);
     if (!car) return next(new AppError('Car not found', 404));
 
-    const {
-        brand, model, year, pricePerDay, carType, engine, transmission,
-        condition, mileage, fueltype, countryoforigin, doors, seats,
-        pasenger, location, description, phone, features
-    } = req.body;
+    // 1. სურათების დამუშავება
+    let imagesUrls = car.images; // დავიტოვოთ ძველი სურათები
 
-    // 1. Features-ის დაპარსვა
+    // შემოწმება: ნამდვილად მოვიდა თუ არა ფაილები
+    if (req.files && req.files.length > 0) {
+        try {
+            const images = req.files.map(file => file.path.replace(/\\/g, '/'));
+
+            // დაამატე კონსოლში, რომ ნახო აქამდე თუ აღწევს
+            console.log("Uploading to Cloudinary...");
+
+            const result = await imageUpload('cars', images);
+
+            if (result && result.length > 0) {
+                imagesUrls = result.map(r => r.secure_url);
+                console.log("Upload successful!");
+            }
+        } catch (uploadErr) {
+            console.error("Cloudinary Upload Error:", uploadErr);
+            // თუ ატვირთვა ჩავარდა, ნუ გავაჩერებთ რექვესტს, დავაბრუნოთ ერორი
+            return next(new AppError('Image upload failed', 500));
+        }
+    }
+
+    // 2. დანარჩენი მონაცემების მომზადება
+    const { features, location, ...bodyData } = req.body;
+
+    // Features-ის სწორი დაპარსვა
     let parsedFeatures = car.features;
     if (features) {
         parsedFeatures = typeof features === "string" ? JSON.parse(features) : features;
     }
 
-    // 2. სურათების დამუშავება
-    let imagesUrls = car.images;
-    if (req.files && req.files.length > 0) {
-        const images = req.files.map(file => file.path.replace(/\\/g, '/'));
-        const result = await imageUpload('cars', images);
-        imagesUrls = result.map(r => r.secure_url);
-    }
-
-    // 3. ლოკაციის გასწორება (აი ეს აკლდა!)
-    let formattedLocation = car.location; // დეფოლტად ძველი დავტოვოთ
+    // ლოკაციის სწორი დამუშავება
+    let formattedLocation = car.location;
     if (location) {
-        if (typeof location === 'string') {
-            formattedLocation = { address: location };
-        } else {
-            formattedLocation = location;
-        }
+        formattedLocation = typeof location === 'string' ? { address: location } : location;
     }
 
-    // 4. მონაცემების მომზადება
+    // 3. მონაცემების შერწყმა
     const updateData = {
-        brand, model, year, pricePerDay,
+        ...bodyData,
         images: imagesUrls,
-        carType,
-        engine, transmission, condition, mileage, fueltype,
-        countryoforigin, doors, seats, pasenger,
-        location: formattedLocation, // ახლა უკვე ობიექტია
-        description, phone,
-        features: parsedFeatures
+        features: parsedFeatures,
+        location: formattedLocation
     };
 
-    // 5. განახლება და შენახვა
+    // წავშალოთ undefined მნიშვნელობები
+    Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+
     Object.assign(car, updateData);
+
+    // შენახვა (save() გამოიძახებს გეოკოდერსაც)
     const updatedCar = await car.save();
 
     res.status(200).json({
         status: 'success',
-        message: 'Car updated',
         car: updatedCar
     });
 });
