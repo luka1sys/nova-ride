@@ -73,16 +73,21 @@ const carSchema = mongoose.Schema({
 carSchema.index({ "location.coordinates": "2dsphere" });
 
 carSchema.pre('save', async function (next) {
+    // თუ მისამართი არ შეცვლილა, ნუ გადაამუშავებ
     if (!this.isModified('location.address')) return next();
 
     try {
         const loc = await geocoder.geocode(this.location.address);
 
         if (loc && loc.length > 0) {
+            // ვავსებთ სქემის მიხედვით: location.coordinates
             this.location.coordinates = {
                 type: 'Point',
-                coordinates: [loc[0].longitude, loc[0].latitude]
+                coordinates: [loc[0].longitude, loc[0].latitude] // [გრძედი, განედი]
             };
+
+            // სურვილის შემთხვევაში შეგიძლია მისამართიც უფრო ზუსტით შეცვალო, რასაც გეოკოდერი დააბრუნებს
+            // this.location.address = loc[0].formattedAddress; 
         }
         next();
     } catch (err) {

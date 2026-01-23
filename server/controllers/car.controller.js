@@ -6,42 +6,38 @@ const catchAsync = require("../utils/catchAsync");
 const imageUpload = require("../utils/image");
 
 const addCar = catchAsync(async (req, res, next) => {
-    // 1. ამოვიღოთ მონაცემები body-დან
     let {
         brand, model, year, pricePerDay, carType, engine, transmission,
         condition, mileage, fueltype, countryoforigin, doors, seats,
         pasenger, location, description, phone, features
     } = req.body;
 
-    // 2. ლოკაციის გასწორება (ტექსტიდან ობიექტში გადაყვანა)
-    // თუ ფრონტიდან მოდის უბრალოდ "tbilisi", ჩვენ ის უნდა ჩავსვათ address ველში
-    let formattedLocation;
+    // 1. ლოკაციის მომზადება (სქემის სტრუქტურის მიხედვით)
+    let locationData = { address: "" };
+
     if (typeof location === 'string') {
-        // თუ ფრონტიდან მხოლოდ სტრინგი მოვიდა (მაგ: ინპუტიდან)
         try {
-            // ვცდილობთ დავაპარსოთ, თუ შემთხვევით JSON სტრინგია
-            formattedLocation = JSON.parse(location);
+            // თუ შემთხვევით JSON-ია (React-იდან მოსული)
+            const parsed = JSON.parse(location);
+            locationData.address = parsed.address || location;
         } catch (e) {
-            // თუ ჩვეულებრივი ტექსტია
-            formattedLocation = { address: location };
+            // თუ ჩვეულებრივი ტექსტია "Tbilisi, Georgia"
+            locationData.address = location;
         }
-    } else {
-        // თუ უკვე ობიექტია (რომელსაც მოყვება coordinates)
-        formattedLocation = location;
     }
 
-    // 3. Features-ის დაპარსვა
-    let parsedFeatures = {};
-    if (features) {
-        parsedFeatures = typeof features === "string" ? JSON.parse(features) : features;
+    // 2. Features-ის დაპარსვა
+    let parsedFeatures = features;
+    if (typeof features === "string") {
+        parsedFeatures = JSON.parse(features);
     }
 
-    // 4. სურათების დამუშავება
+    // 3. სურათების დამუშავება
     const images = req.files ? req.files.map((file) => file.path.replace(/\\/g, '/')) : [];
     const result = await imageUpload('cars', images);
     const imagesUrls = result.map(r => r.secure_url);
 
-    // 5. მანქანის შექმნა (ყველა ციფრი ავტომატურად გახდება Number მოდელის მიერ)
+    // 4. მანქანის შექმნა
     const newCar = await Car.create({
         brand,
         model,
@@ -58,7 +54,7 @@ const addCar = catchAsync(async (req, res, next) => {
         doors,
         seats,
         pasenger,
-        location: formattedLocation, // აქ უკვე იქნება { address: 'tbilisi' }
+        location: locationData, // გადაეცემა { address: "..." }
         description,
         phone,
         features: parsedFeatures
@@ -66,7 +62,6 @@ const addCar = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
         status: 'success',
-        message: 'Car added',
         car: newCar
     });
 });
