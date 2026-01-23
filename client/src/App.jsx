@@ -34,15 +34,13 @@ function App() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
-  // 1️⃣ Preloader ტაიმერი
+  // Preloader ტაიმერი
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
-
-
   useEffect(() => {
     const dot = document.getElementById("cursor-dot");
     if (!dot) return;
@@ -52,7 +50,7 @@ function App() {
     };
 
     window.addEventListener("mousemove", moveDot);
-
+    
     return () => window.removeEventListener("mousemove", moveDot);
   }, [loading]);
 

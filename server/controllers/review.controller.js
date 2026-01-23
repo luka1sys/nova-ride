@@ -9,7 +9,6 @@ const catchAsync = require("../utils/catchAsync");
 const createReview = catchAsync(async (req, res, next) => {
   const { carId, rating, comment } = req.body;
 
-
   const hasBooked = await Booking.findOne({
     user: req.user.id,
     car: carId,
@@ -31,12 +30,15 @@ const createReview = catchAsync(async (req, res, next) => {
   }
 
   //  Review შექმნა
-  const review = await Review.create({
+  let review = await Review.create({
     user: req.user.id,
     car: carId,
     rating,
     comment
   });
+
+  // აი ეს არის მთავარი ცვლილება: ვტვირთავთ მომხმარებლის სახელს შექმნილ ობიექტში
+  review = await review.populate("user", "fullname");
 
   //  საშუალო რეიტინგის გადათვლა
   const reviews = await Review.find({ car: carId });
