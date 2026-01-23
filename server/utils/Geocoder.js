@@ -1,9 +1,8 @@
 const nodeGeocoder = require('node-geocoder');
 
 const options = {
-    provider: 'positionstack',
-    httpAdapter: 'http', // უფასო ტარიფისთვის მნიშვნელოვანია
-    apiKey: process.env.GEOCODER_API_KEY,
+    provider: 'locationiq', // გამოიყენე ეს სახელი
+    apiKey: process.env.GEOCODER_API_KEY, // ეს ისევ დატოვე ცვლადად
     formatter: null
 };
 
