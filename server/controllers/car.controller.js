@@ -4,64 +4,61 @@ const Car = require("../models/car.model");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const imageUpload = require("../utils/image");
+
 const addCar = catchAsync(async (req, res, next) => {
+    // 1. ამოვიღოთ მონაცემები body-დან
     let {
         brand, model, year, pricePerDay, carType, engine, transmission,
         condition, mileage, fueltype, countryoforigin, doors, seats,
         pasenger, location, description, phone, features
     } = req.body;
 
-    // 1. ლოკაციის სწორად დაჭერა
-    let addressText = "";
-
+    // 2. ლოკაციის გასწორება (ტექსტიდან ობიექტში გადაყვანა)
+    // თუ ფრონტიდან მოდის უბრალოდ "tbilisi", ჩვენ ის უნდა ჩავსვათ address ველში
+    let formattedLocation;
     if (typeof location === 'string') {
-        // თუ სტრინგია, ვამოწმებთ ხომ არ არის JSON სტრინგი
-        if (location.startsWith('{')) {
-            try {
-                const parsedLoc = JSON.parse(location);
-                addressText = parsedLoc.address || "";
-            } catch (e) {
-                addressText = location;
-            }
-        } else {
-            addressText = location;
-        }
-    } else if (location && typeof location === 'object') {
-        // თუ პირდაპირ ობიექტი მოვიდა
-        addressText = location.address || "";
+        formattedLocation = { address: location };
+    } else {
+        formattedLocation = location;
     }
 
-    // თუ მისამართი ცარიელია, შეგვიძლია შეცდომა დავაბრუნოთ
-    if (!addressText || addressText === "[object Object]") {
-        return next(new AppError('Please provide a valid location address', 400));
-    }
-
-    // 2. Features-ის დაპარსვა
+    // 3. Features-ის დაპარსვა
     let parsedFeatures = {};
     if (features) {
         parsedFeatures = typeof features === "string" ? JSON.parse(features) : features;
     }
 
-    // 3. სურათების დამუშავება
+    // 4. სურათების დამუშავება
     const images = req.files ? req.files.map((file) => file.path.replace(/\\/g, '/')) : [];
     const result = await imageUpload('cars', images);
     const imagesUrls = result.map(r => r.secure_url);
 
-    // 4. მანქანის შექმნა
+    // 5. მანქანის შექმნა (ყველა ციფრი ავტომატურად გახდება Number მოდელის მიერ)
     const newCar = await Car.create({
-        brand, model, year, pricePerDay,
+        brand,
+        model,
+        year,
+        pricePerDay,
         images: imagesUrls,
-        carType, engine, transmission, condition, mileage, fueltype,
-        countryoforigin, doors, seats, pasenger,
-        location: {
-            address: addressText // აქ ახლა იქნება ნამდვილი ტექსტი: "Tbilisi"
-        },
-        description, phone,
+        carType,
+        engine,
+        transmission,
+        condition,
+        mileage,
+        fueltype,
+        countryoforigin,
+        doors,
+        seats,
+        pasenger,
+        location: formattedLocation, // აქ უკვე იქნება { address: 'tbilisi' }
+        description,
+        phone,
         features: parsedFeatures
     });
 
     res.status(200).json({
         status: 'success',
+        message: 'Car added',
         car: newCar
     });
 });
@@ -155,14 +152,9 @@ const updateCar = catchAsync(async (req, res, next) => {
 
     // 3. ლოკაციის გასწორება (აი ეს აკლდა!)
     let formattedLocation = car.location; // დეფოლტად ძველი დავტოვოთ
-
     if (location) {
         if (typeof location === 'string') {
-            try {
-                formattedLocation = JSON.parse(location);
-            } catch (e) {
-                formattedLocation = { address: location };
-            }
+            formattedLocation = { address: location };
         } else {
             formattedLocation = location;
         }
@@ -190,6 +182,7 @@ const updateCar = catchAsync(async (req, res, next) => {
         car: updatedCar
     });
 });
+
 const deleteCar = catchAsync(async (req, res, next) => {
     const car = await Car.findByIdAndDelete(req.params.id);
     if (!car) return next(AppError('Car not found', 404));
