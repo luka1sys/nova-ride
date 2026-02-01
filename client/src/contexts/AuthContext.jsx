@@ -158,7 +158,7 @@ export const AuthProvider = ({ children }) => {
     const deleteUserrr = async (id) => {
         const toastId = toast.loading('Deleting user...');
         try {
-            await deleteUser(id); // API call
+            await deleteUser(id); 
             setUsers(prev => prev.filter(u => u._id !== id));
             toast.update(toastId, {
                 render: 'User deleted successfully',
@@ -252,7 +252,7 @@ export const AuthProvider = ({ children }) => {
                 isLoading: false,
                 autoClose: 3000
             });
-            navigate('/authentication'); // გადავიყვანოთ ავტორიზაციის გვერდზე
+            navigate('/authentication'); 
         } catch (err) {
             toast.update(toastId, {
                 render: err.response?.data?.message || "Link expired or invalid",

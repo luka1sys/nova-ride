@@ -20,7 +20,7 @@ const createBooking = catchAsync(async (req, res, next) => {
         return next(new AppError("End date must be after start date", 400));
     }
 
-    // ✅ Overlapping check – prevent double booking
+  
     const existingBookings = await Booking.find({
         car: carId,
         status: 'confirmed'

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { IconUser, IconMail, IconShieldLock, IconX, IconLoader2, IconCircleCheck } from "@tabler/icons-react";
-import { useTranslation } from "react-i18next"; // 1. იმპორტი
+import { useTranslation } from "react-i18next"; 
 
 const UserUpdateForm = ({ userId, onClose }) => {
     const { updateUserrr, users } = useAuth();
-    const { t } = useTranslation(); // 2. ინიციალიზაცია
+    const { t } = useTranslation(); 
     const [fullname, setFullname] = useState("");
     const [email, setEmail] = useState("");
     const [role, setRole] = useState("");

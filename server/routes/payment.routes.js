@@ -3,7 +3,7 @@ const { createBookingCheckoutSession, confirmBookingPayment } = require('../cont
 const paymentRouter = express.Router();
 
 
-// POST /api/bookings/checkout
+
 paymentRouter.post('/', createBookingCheckoutSession);
 paymentRouter.post('/confirm', confirmBookingPayment);
 module.exports = paymentRouter;

@@ -12,7 +12,7 @@ const UserControl = ({ users }) => {
 
     const handleDelete = async (userId) => {
         try {
-            // თუ გინდა აქ დაამატე window.confirm(t("Are you sure?"))
+     
             await deleteUserrr(userId);
         } catch (error) {
             console.error("Failed to delete user:", error);

@@ -4,10 +4,10 @@ const sendEmail = async (email, subject, text, html) => {
     try {
         const transporter = nodemailer.createTransport({
             host: 'smtp-relay.brevo.com',
-            port: 2525, // Render-ზე 2525 ყველაზე საიმედოა
+            port: 2525, 
             secure: false,
             auth: {
-                // აქ აუცილებლად შენი იმეილი ჩაწერე .env-ში
+         
                 user: process.env.BREVO_USER,
                 pass: process.env.BREVO_PASSWORD
             }
@@ -22,9 +22,9 @@ const sendEmail = async (email, subject, text, html) => {
         };
 
         await transporter.sendMail(mailOptions);
-        console.log('✅ Email sent successfully via Brevo');
+        console.log('Email sent successfully via Brevo');
     } catch (error) {
-        console.error('❌ Email sending error:', error);
+        console.error('Email sending error:', error);
     }
 };
 module.exports = sendEmail;

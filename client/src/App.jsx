@@ -1,7 +1,7 @@
 import './styles/global.css';
 import { useEffect, useState } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import { useAuth } from "./contexts/AuthContext"; // დარწმუნდი რომ იმპორტი სწორია
+import { useAuth } from "./contexts/AuthContext";
 import HomePage from './pages/HomePage';
 import CarsPage from './pages/CarsPage';
 import Navbar from './components/Navbar';
@@ -20,7 +20,7 @@ import ScrollToTop from './utils/ScrollToTop';
 import ForgotPassword from './components/ForgotPasswordForm';
 import ResetPassword from './components/ResetPasswordForm';
 
-// დამცავი კომპონენტი როუტებისთვის
+
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user } = useAuth();
 
@@ -109,7 +109,7 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* ძველი adminpanel-ის გადამისამართება ახალ /admin-ზე */}
+        {/* ძველი adminpanel-ის გადამისამართება ახალ admin-ზე */}
         <Route path="/adminpanel" element={<Navigate to="/admin" />} />
 
         {/* Booking & Payment */}

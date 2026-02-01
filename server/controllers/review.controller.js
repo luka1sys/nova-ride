@@ -5,7 +5,7 @@ const Review = require("../models/review.model");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
-// ➕ Review დამატება
+// Review დამატება
 const createReview = catchAsync(async (req, res, next) => {
   const { carId, rating, comment } = req.body;
 
@@ -37,10 +37,9 @@ const createReview = catchAsync(async (req, res, next) => {
     comment
   });
 
-  // აი ეს არის მთავარი ცვლილება: ვტვირთავთ მომხმარებლის სახელს შექმნილ ობიექტში
   review = await review.populate("user", "fullname");
 
-  //  საშუალო რეიტინგის გადათვლა
+  //  საშუალო რეიტინგის დათვლა
   const reviews = await Review.find({ car: carId });
 
   const avg =

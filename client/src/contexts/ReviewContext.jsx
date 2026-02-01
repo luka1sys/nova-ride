@@ -3,10 +3,10 @@ import { createReview, getCarReviews } from "../services/reviewService";
 import { useEffect } from "react";
 
 
-// 1️⃣ Context შექმნა
+
 const ReviewContext = createContext();
 export const useReview = () => useContext(ReviewContext);
-// 2️⃣ Provider Component
+
 export const ReviewProvider = ({ children }) => {
     const [reviews, setReviews] = useState([]);
 
@@ -45,5 +45,5 @@ export const ReviewProvider = ({ children }) => {
     );
 };
 
-// 3️⃣ Custom hook, რომ component-ში მარტივად გამოვიძახოთ
+
 

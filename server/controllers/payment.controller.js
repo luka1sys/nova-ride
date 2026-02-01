@@ -5,7 +5,7 @@ const catchAsync = require('../utils/catchAsync');
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
-// Payment: create checkout session for a booking
+
 const createBookingCheckoutSession = catchAsync(async (req, res, next) => {
     const { bookingId } = req.body;
 
@@ -15,7 +15,7 @@ const createBookingCheckoutSession = catchAsync(async (req, res, next) => {
         return next(new AppError('Booking not found', 404));
     }
 
-    // შეიქმნას Stripe line item
+   
     const line_items = [
         {
             price_data: {
@@ -46,7 +46,7 @@ const createBookingCheckoutSession = catchAsync(async (req, res, next) => {
 
 
 
-// CONFIRM PAYMENT (demo / portfolio)
+
 const confirmBookingPayment = async (req, res) => {
     const { bookingId } = req.body;
 

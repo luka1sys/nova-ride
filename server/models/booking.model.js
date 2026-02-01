@@ -30,7 +30,7 @@ const bookingSchema = mongoose.Schema({
     status: {
         type: String,
         enum: ['pending', 'confirmed', 'cancelled', 'completed'],
-        default: 'pending' // ჯავშანი ჯერ გადახდის გარეშეა
+        default: 'pending' 
     },
     createdAt: {
         type: Date,

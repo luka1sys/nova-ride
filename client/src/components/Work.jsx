@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next"; // იმპორტი
+import { useTranslation } from "react-i18next";
 
 const Work = () => {
-    const { t } = useTranslation(); // ინიციალიზაცია
+    const { t } = useTranslation(); 
     const [active, setActive] = useState(1);
     const accentColor = "rgb(254, 154, 0)";
 

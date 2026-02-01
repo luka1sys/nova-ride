@@ -2,14 +2,14 @@ import { createPortal } from "react-dom";
 import { useCars } from "../contexts/CarsContext";
 import { useState, useEffect } from "react";
 import {
-    IconX, IconSettings, IconUpload, IconCheck, IconLoader2 // დავამატე ლოადერის იქონი
+    IconX, IconSettings, IconUpload, IconCheck, IconLoader2 
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 
 const AddCarForm = ({ onClose }) => {
     const { addCar } = useCars();
     const { t } = useTranslation();
-    const [loading, setLoading] = useState(false); // ახალი სტეიტი ლოდინისთვის
+    const [loading, setLoading] = useState(false); 
     const accentColor = "rgb(254, 154, 0)";
 
     useEffect(() => {
@@ -31,7 +31,7 @@ const AddCarForm = ({ onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true); // ვიწყებთ პროცესს
+        setLoading(true); 
         const formData = new FormData(e.target);
         formData.append("features", JSON.stringify(features));
 
@@ -41,7 +41,7 @@ const AddCarForm = ({ onClose }) => {
         } catch (error) {
             console.error("Error adding car:", error);
         } finally {
-            setLoading(false); // პროცესი დასრულდა
+            setLoading(false);
         }
     };
 

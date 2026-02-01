@@ -15,7 +15,7 @@ const signToken = (user) => {
 const createSendToken = (user, statusCode, res) => {
     const token = signToken(user)
     res.cookie('lt', token, {
-        // cookie ს სიცოცხლის ვადა 
+        // cookie ს  ვადა 
         maxAge: process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000,
         // 
         secure: true,
@@ -95,18 +95,18 @@ const signUp = catchAsync(async (req, res, next) => {
     </div>
 </div>`;
 
-    // 1. იმეილს ვუშვებთ ფონურ რეჟიმში (await-ის გარეშე)
+    
     sendEmail(
         email,
         'Verify your account',
         `Please verify your account here: ${verificationURL}`,
         htmlMessage
     ).catch(err => {
-        // ეს შეცდომა მხოლოდ სერვერის ლოგებში გამოჩნდება და მომხმარებელს არ შეაწუხებს
+        
         console.error("Background Email Send Error:", err);
     });
 
-    // 2. პასუხს ვაბრუნებთ მაშინვე
+    //  პასუხს ვაბრუნებთ 
     res.status(201).json({
         status: 'success',
         message: 'User created successfully. Please check your email!',
@@ -207,7 +207,7 @@ const getAllUsers = catchAsync(async (req, res) => {
 const verifyEmail = catchAsync(async (req, res, next) => {
     const { token } = req.params;
 
-    // ვეძებთ მომხმარებელს, რომელსაც აქვს ეს ტოკენი და მისი ვადა ჯერ არ გასულა ($gt: Date.now())
+    // ვეძებთ მომხმარებელს, რომელსაც აქვს ეს ტოკენი და მისი ვადა ჯერ არ გასულა 
     const user = await User.findOne({
         verificationToken: token,
         verificationTokenExpires: { $gt: Date.now() }
@@ -235,14 +235,13 @@ const changePassword = catchAsync(async (req, res, next) => {
         return next(new AppError("Please provide current and new password", 400));
     }
 
-    // ვიღებთ user-ს DB-დან (რადგან password select:false ხშირად აქვთ)
     const user = await User.findById(req.user.id).select("+password");
 
     if (!user) {
         return next(new AppError("User not found", 404));
     }
 
-    // ვამოწმებთ ძველ პაროლს
+
     const isCorrect = await user.comparePassword(currentPassword, user.password);
 
     if (!isCorrect) {
@@ -275,17 +274,16 @@ const updateMe = catchAsync(async (req, res, next) => {
 });
 
 
-const crypto = require('crypto'); // Node.js-ის სტანდარტული ბიბლიოთეკაა
+const crypto = require('crypto'); 
 
 const forgotPassword = catchAsync(async (req, res, next) => {
-    // 1) ვეძებთ იუზერს მეილის მიხედვით
+    //  ვეძებთ იუზერს მეილის მიხედვით
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
         return next(new AppError('There is no user with email address.', 404));
     }
 
-    // 2) ვაგენერირებთ შემთხვევით ტოკენს (ამისთვის მოდელში უნდა გქონდეს მეთოდი, ან აქვე შექმენი)
-    // თუ მოდელში გაქვს createVerificationToken-ის მსგავსი, გამოიყენე ის
+    //  ვაგენერირებთ შემთხვევით ტოკენს
     const resetToken = crypto.randomBytes(32).toString('hex');
 
     // ვინახავთ დაჰეშირებულ ტოკენს ბაზაში უსაფრთხოებისთვის
@@ -294,7 +292,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
 
     await user.save({ validateBeforeSave: false });
 
-    // 3) ვუგზავნით მეილზე ლინკს
+    //  ვუგზავნით მეილზე ლინკს
     const resetURL = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`;
 
     const message = `Forgot your password? Submit a new password to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
@@ -316,27 +314,27 @@ const forgotPassword = catchAsync(async (req, res, next) => {
 
 
 const resetPassword = catchAsync(async (req, res, next) => {
-    // 1) ვიღებთ დაჰეშირებულ ტოკენს URL-იდან მოსული ტოკენის საფუძველზე
+    //  ვიღებთ დაჰეშირებულ ტოკენს URL-იდან მოსული ტოკენის საფუძველზე
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
 
-    // 2) ვეძებთ იუზერს, ვისაც ეს ტოკენი აქვს და ვადა არ გასვლია
+    //  ვეძებთ იუზერს, ვისაც ეს ტოკენი აქვს და ვადა არ გასვლია
     const user = await User.findOne({
         passwordResetToken: hashedToken,
         passwordResetExpires: { $gt: Date.now() }
     });
 
-    // 3) თუ იუზერი არ არსებობს ან ტოკენს ვადა გაუვიდა
+    // თუ იუზერი არ არსებობს ან ტოკენს ვადა გაუვიდა
     if (!user) {
         return next(new AppError('Token is invalid or has expired', 400));
     }
 
-    // 4) ვცვლით პაროლს
+    // ვცვლით პაროლს
     user.password = req.body.password;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save();
 
-    // 5) ავტომატურად ვაკეთებთ ლოგინს (ვუგზავნით ახალ JWT ტოკენს)
+    //  ავტომატურად ვაკეთებთ ლოგინს (ვუგზავნით ახალ JWT ტოკენს)
     createSendToken(user, 200, res);
 });
 

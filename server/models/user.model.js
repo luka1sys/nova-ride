@@ -24,7 +24,7 @@ const userSchema = mongoose.Schema({
         enum: ["user", "admin"],
         default: "user"
     },
-    isVerified: { // email-ვერიფიკაციისთვის
+    isVerified: {
         type: Boolean,
         default: false
     },
@@ -50,7 +50,7 @@ const userSchema = mongoose.Schema({
 })
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
-    this.password = await bcrypt.hash(this.password, 12);  // ← აქ უნდა გქონდეს await
+    this.password = await bcrypt.hash(this.password, 12); 
     next();
 })
 userSchema.methods.comparePassword = async function (candidatePassword, userPassword) {

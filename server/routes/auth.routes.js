@@ -16,7 +16,7 @@ authRouter.patch('/change-password', protect, changePassword);
 authRouter.patch('/update-me', protect, updateMe);
 authRouter.post('/forgotPassword', forgotPassword);
 
-// 2. პაროლის რეალური შეცვლა ტოკენის მეშვეობით
+// პაროლის რეალური შეცვლა ტოკენის მეშვეობით
 authRouter.patch('/resetPassword/:token', resetPassword);
 
 authRouter.get('/me', protect, (req, res) => {

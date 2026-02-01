@@ -8,9 +8,9 @@ const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_USERINFO_URL = 'https://www.googleapis.com/oauth2/v1/userinfo';
 
-// Helper: create token and send cookie
+
 const createSendToken = (user, res) => {
-    const token = signToken(user);// დარწმუნდი, რომ user.model–ში ფუნქცია არსებობს
+    const token = signToken(user);
 
     res.cookie('lt', token, {
         httpOnly: true,
@@ -22,7 +22,6 @@ const createSendToken = (user, res) => {
     return res.redirect(`${process.env.CLIENT_URL}`);
 };
 
-// Step 1: Redirect user to Google login
 const getGoogleAuthUrl = (req, res) => {
     const params = new URLSearchParams({
         client_id: process.env.GOOGLE_CLIENT_ID,
@@ -36,12 +35,10 @@ const getGoogleAuthUrl = (req, res) => {
     res.redirect(`${GOOGLE_AUTH_URL}?${params.toString()}`);
 };
 
-// Step 2: Handle Google callback
 const googleCallBack = async (req, res, next) => {
     try {
         const { code } = req.query;
 
-        // Google Token Request (application/x-www-form-urlencoded)
         const tokenResponse = await axios.post(
             GOOGLE_TOKEN_URL,
             new URLSearchParams({
@@ -56,7 +53,6 @@ const googleCallBack = async (req, res, next) => {
 
         const { access_token } = tokenResponse.data;
 
-        // Get user info from Google
         const userInfoResponse = await axios.get(GOOGLE_USERINFO_URL, {
             headers: { Authorization: `Bearer ${access_token}` },
         });
@@ -67,7 +63,6 @@ const googleCallBack = async (req, res, next) => {
             return next(new AppError('Email not verified by Google', 400));
         }
 
-        // Check if user already exists
         let user = await User.findOne({ email });
 
         if (user) {

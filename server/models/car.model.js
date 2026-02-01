@@ -4,15 +4,15 @@ const geocoder = require('../utils/Geocoder');
 const carSchema = mongoose.Schema({
     brand: {
         type: String,
-        required: [true, 'Car brand is required'] // შესწორებულია
+        required: [true, 'Car brand is required'] 
     },
     model: {
         type: String,
-        required: [true, 'Car model is required'] // შესწორებულია
+        required: [true, 'Car model is required'] 
     },
     year: {
         type: Number,
-        required: [true, 'year is required'] // შესწორებულია
+        required: [true, 'year is required'] 
     },
     pricePerDay: {
         type: Number,
@@ -22,7 +22,7 @@ const carSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    images: [String], // მოკლე ჩაწერა
+    images: [String], 
     carType: String,
     engine: String,
     transmission: String,

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { useTranslation } from "react-i18next"; // იმპორტი
+import { useTranslation } from "react-i18next";
 
 const UpdateMyProfileForm = () => {
   const { user, updateMyProfile } = useAuth();
-  const { t } = useTranslation(); // ჰუკი
+  const { t } = useTranslation(); 
   const [fullname, setFullname] = useState(user?.fullname || "");
   const [email, setEmail] = useState(user?.email || "");
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ const UpdateMyProfileForm = () => {
 
   return (
     <div className="bg-[#0A0A0A] border border-white/10 rounded-[32px] p-10 shadow-2xl relative overflow-hidden">
-      {/* სათაური - მკაფიო და სუფთა */}
+   
       <div className="mb-10 relative z-10">
         <h3 className="text-2xl font-bold text-white tracking-tight">
           {t("Update")} <span className="text-[#FE9A00]">{t("Profile")}</span>
@@ -64,7 +64,6 @@ const UpdateMyProfileForm = () => {
           />
         </div>
 
-        {/* ღილაკი - უფრო გამოსაჩენი */}
         <button
           type="submit"
           disabled={loading}

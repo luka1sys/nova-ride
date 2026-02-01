@@ -32,14 +32,12 @@ export const BookingProvider = ({ children }) => {
             const response = await apiCreateBooking(data);
             const newBooking = response.data.booking;
 
-            // 1. ჯერ ვინახავთ ძირითად ობიექტს
+            //  ჯერ ვინახავთ ძირითად ობიექტს
             setBooking(newBooking);
 
-            // 2. მნიშვნელოვანია: დაველოდოთ მონაცემების ხელახლა წამოღებას ბექენდიდან
-            // ეს წამოიღებს სრულად "დაპოპულირებულ" (Populated) User-ს და სწორ სტატუსს
+  
+ 
             await fetchMyBookings();
-
-            // 3. თუ მომხმარებელი ადმინია, განვუახლოთ ადმინის პანელის სია
             if (user?.role === 'admin') {
                 await fetchAllBookings();
             }
@@ -96,10 +94,10 @@ export const BookingProvider = ({ children }) => {
     const deletedBooking = async (id) => {
         const toastId = toast.loading('processing...');
         try {
-            await deleteBooking(id); // call API
-            // remove from allBookings
+            await deleteBooking(id);
+      
             setAllBookings(prev => prev.filter(booking => booking._id !== id));
-            // remove from myBookings
+           
             setMyBookings(prev => prev.filter(booking => booking._id !== id));
             toast.update(toastId, {
                 render: 'Deleted successfully',
