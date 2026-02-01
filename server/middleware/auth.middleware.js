@@ -27,7 +27,7 @@ const protect = async (req, res, next) => {
     } catch (error) {
         console.error("Auth Middleware Error:", error.message);
         
-        // Handle token expiration separately
+
         if (error.name === "TokenExpiredError") {
             return next(new AppError("your authorization time has expired, please try again!", 401));
         }
