@@ -47,13 +47,33 @@ const createBookingCheckoutSession = catchAsync(async (req, res, next) => {
 
 
 
-const confirmBookingPayment = async (req, res) => {
-    const { bookingId } = req.body;
 
-    await Booking.findByIdAndUpdate(bookingId, {
-        status: 'confirmed'
-    });
 
-    res.status(200).json({ message: 'Booking confirmed' });
-};
-module.exports = { createBookingCheckoutSession, confirmBookingPayment };
+// ეს ფუნქცია გამოიძახება Stripe-ის მიერ ავტომატურად
+const webhookCheckout = catchAsync(async (req, res, next) => {
+    const signature = req.headers['stripe-signature'];
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(
+            req.body, 
+            signature, 
+            process.env.STRIPE_WEBHOOK_SECRET // ამას Stripe-ის პანელიდან აიღებ
+        );
+    } catch (err) {
+        return res.status(400).send(`Webhook error: ${err.message}`);
+    }
+
+    if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        
+        // აქ ვაახლებთ ბაზას ნამდვილი გადახდის საფუძველზე
+        await Booking.findByIdAndUpdate(session.metadata.bookingId, {
+            status: 'confirmed',
+            paymentId: session.payment_intent // ინახავ გადახდის ID-ს რეფერენსისთვის
+        });
+    }
+
+    res.status(200).json({ received: true });
+});
+module.exports = { createBookingCheckoutSession,  webhookCheckout };
