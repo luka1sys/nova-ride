@@ -18,7 +18,6 @@ const oauthRouter = require('./routes/oauth.routes');
 const reviewRouter = require('./routes/review.routes');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const { webhookCheckout } = require('./controllers/payment.controller');
 // const mongooseSanitize = require('express-mongo-sanitize');
 
 // ვქმნით express აპლიკაციასს
@@ -38,12 +37,6 @@ app.use(cors({
   credentials: true
 }));
 
-// confirm checkout
-app.post(
-  '/api/checkout/confirm',
-  express.raw({ type: 'application/json' }),
-  webhookCheckout
-);
 // middleWare - JSON ფორმატის request body-ს კითხულობს
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser())

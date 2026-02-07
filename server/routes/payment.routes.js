@@ -1,8 +1,9 @@
 const express = require('express');
-const { createBookingCheckoutSession,} = require('../controllers/payment.controller');
+const { createBookingCheckoutSession, confirmBookingPayment } = require('../controllers/payment.controller');
 const paymentRouter = express.Router();
 
 
 
 paymentRouter.post('/', createBookingCheckoutSession);
+paymentRouter.post('/confirm', confirmBookingPayment);
 module.exports = paymentRouter;
